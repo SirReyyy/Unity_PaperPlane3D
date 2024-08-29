@@ -9,7 +9,7 @@ public class Preloader : MonoBehaviour
 
     private CanvasGroup fadeGroup;
     private float loadTime;
-    private float minimumLogoTime = 5.0f;
+    private float minimumLogoTime = 4.0f;
 
 
     //----- Functions

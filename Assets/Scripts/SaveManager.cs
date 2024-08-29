@@ -15,17 +15,19 @@ public class SaveManager : MonoBehaviour
         DontDestroyOnLoad(this);
         Instance = this;
         Load();
+
+        Debug.Log(Helper.Serialize<SaveState>(state));
     } //-- Awake end
 
 
     public void Save() {
-        // PlayerPrefs.SetString("save", /* Serialized Saved Data* /);
+        PlayerPrefs.SetString("save", Helper.Serialize<SaveState>(state));
     } //-- Save end
 
 
     public void Load() {
         if(PlayerPrefs.HasKey("save")) {
-            // state = /* Deserialized Class */
+            state = Helper.Deserialize<SaveState>(PlayerPrefs.GetString("save"));
         } else {
             state = new SaveState();
             Save();
