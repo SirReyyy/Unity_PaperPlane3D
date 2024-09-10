@@ -7147,6 +7147,8 @@ MonoBehaviour:
   colorPanel: {fileID: 212692525}
   trailPanel: {fileID: 2001250422}
   levelPanel: {fileID: 924138180}
+  colorBuySetTxt: {fileID: 1651622983}
+  trailBuySetTxt: {fileID: 807961920}
 --- !u!4 &1683424271
 Transform:
   m_ObjectHideFlags: 0

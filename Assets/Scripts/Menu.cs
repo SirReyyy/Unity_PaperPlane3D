@@ -16,6 +16,14 @@ public class Menu : MonoBehaviour
     public Transform trailPanel;
     public Transform levelPanel;
 
+    public Text colorBuySetTxt;
+    public Text trailBuySetTxt;
+
+    private int[] colorCost = new int[] {0, 5, 5, 5, 10, 10, 15, 15, 20, 20};
+    private int[] trailCost = new int[] {0, 20, 20, 40, 40, 40, 60, 60, 80, 80};
+    private int selectedColorIndex;
+    private int selectedTrailIndex;
+
     private Vector3 desiredMenuPos;
 
 
@@ -27,8 +35,6 @@ public class Menu : MonoBehaviour
 
         InitShop();
         InitLevel();
-
-        Debug.Log(Screen.width);
     } //-- Start end
 
 
@@ -93,6 +99,15 @@ public class Menu : MonoBehaviour
         }
     } //-- SlideTo end
 
+    private void SetColor(int index) {
+
+        colorBuySetTxt.text = "Active";
+    } //-- SetColor end
+
+    private void SetTrail(int index) {
+
+        trailBuySetTxt.text = "Active";
+    } //-- SetTrail end
 
     //----- Button Function
 
@@ -110,10 +125,24 @@ public class Menu : MonoBehaviour
 
     private void OnColorSelect(int currentIndex) {
         Debug.Log("Color " + currentIndex);
+        selectedColorIndex = currentIndex;
+
+        if(SaveManager.Instance.IsColorOwned(currentIndex)) {
+            colorBuySetTxt.text = "Select";
+        } else {
+            colorBuySetTxt.text = colorCost[currentIndex].ToString();
+        }
     } //-- OnColorSelect end
 
     private void OnTrailSelect(int currentIndex) {
         Debug.Log("Trail " + currentIndex);
+        selectedTrailIndex = currentIndex;
+
+        if(SaveManager.Instance.IsTrailOwned(currentIndex)) {
+            trailBuySetTxt.text = "Select";
+        } else {
+            trailBuySetTxt.text = trailCost[currentIndex].ToString();
+        }
     } //-- OnTrailSelect end
 
     private void OnLevelSelect(int currentIndex) {
@@ -122,10 +151,30 @@ public class Menu : MonoBehaviour
 
     public void OnColorBSClicked() {
         Debug.Log("Color Buy / Set Clicked");
+        
+        if(SaveManager.Instance.IsColorOwned(selectedColorIndex)) {
+            SetColor(selectedColorIndex);
+        } else {
+            if(SaveManager.Instance.BuyAttemptColor(selectedColorIndex, colorCost[selectedColorIndex])) {
+                SetColor(selectedColorIndex);
+            } else {
+                Debug.Log("Not enough gold."); //--
+            }
+        }
     } //-- OnColorBSClicked end
 
     public void OnTrailBSClicked() {
         Debug.Log("Trail Buy / Set Clicked");
+
+        if(SaveManager.Instance.IsTrailOwned(selectedTrailIndex)) {
+            SetTrail(selectedTrailIndex);
+        } else {
+            if(SaveManager.Instance.BuyAttemptTrail(selectedTrailIndex, trailCost[selectedTrailIndex])) {
+                SetTrail(selectedTrailIndex);
+            } else {
+                Debug.Log("Not enough gold."); //--
+            }
+        }
     } //-- OnTrailBSClicked end
 
 }
