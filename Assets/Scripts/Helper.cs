@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 public static class Helper
 {
-    // Serialize
+    // Serialize data
     public static string Serialize<T>(this T toSerialize) {
         XmlSerializer xml = new XmlSerializer(typeof(T));
         StringWriter writer = new StringWriter();
@@ -12,7 +12,7 @@ public static class Helper
         return writer.ToString();
     }
 
-    // De-serialize
+    // De-serialize data
     public static T Deserialize<T>(this string toDeserialize)
     {
         XmlSerializer xml = new XmlSerializer(typeof(T));
@@ -23,6 +23,6 @@ public static class Helper
 
 
 /*
-Project Name :
+Project Name : Paper Plane 3D
 Created by   : Sir Reyyy
 */

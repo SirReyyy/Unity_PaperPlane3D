@@ -12,46 +12,51 @@ public class SaveManager : MonoBehaviour
     //----- Functions
 
     void Awake() {
-        ResetSave(); //-- temp
+        // ResetSave(); //-- remove
         DontDestroyOnLoad(this);
         Instance = this;
+        
         Load();
-
-        Debug.Log(Helper.Serialize<SaveState>(state));
+        // Debug.Log(Helper.Serialize<SaveState>(state)); //-- remove
     } //-- Awake end
 
 
     public void Save() {
+        //- Save data
         PlayerPrefs.SetString("save", Helper.Serialize<SaveState>(state));
     } //-- Save end
 
 
     public void Load() {
+        //- Load  data
         if(PlayerPrefs.HasKey("save")) {
             state = Helper.Deserialize<SaveState>(PlayerPrefs.GetString("save"));
         } else {
             state = new SaveState();
             Save();
-            Debug.Log("No save file exists. Creating a new one.");
+            //- Debug.Log("No save file exists. Creating a new one."); //-- remove
         }
     } //-- Load end
 
 
     public bool IsColorOwned(int index) {
+        //- Bitwise check, return true if index is = 1 
         return (state.colorOwned & (1 << index)) != 0;
     } //-- IsColorOwned end
 
     public bool IsTrailOwned(int index) {
+        //- Bitwise check, return true if index is = 1
         return (state.trailOwned & (1 << index)) != 0;
     } //-- IsTrailOwned end
 
 
     public bool BuyAttemptColor(int index, int cost) {
+        //- Gold validation
         if(state.gold >= cost) {
             state.gold -= cost;
             UnlockColor(index);
 
-            // Save progress
+            //- Save progress
             Save();
             return true;
         } else {
@@ -60,11 +65,12 @@ public class SaveManager : MonoBehaviour
     } //-- BuyAttemptColor
 
     public bool BuyAttemptTrail(int index, int cost) {
+        //- Gold validation
         if(state.gold >= cost) {
             state.gold -= cost;
             UnlockTrail(index);
 
-            // Save progress
+            //- Save progress
             Save();
             return true;
         } else {
@@ -73,17 +79,17 @@ public class SaveManager : MonoBehaviour
     } //-- BuyAttemptColor
 
     public void UnlockColor(int index) {
-        // toggle color bit at given index
+        //- Toggle color bit at given index
         state.colorOwned |= 1 << index; 
     } //-- UnlockColor end
 
     public void UnlockTrail(int index) {
-        // toggle trail bit at given index
+        //- Toggle trail bit at given index
         state.trailOwned |= 1 << index; 
     } //-- UnlockTrail end
 
 
-    // for testing only
+    //- For testing. remove
     public void ResetSave() {
         PlayerPrefs.DeleteKey("save");
     } //-- ResetSave end

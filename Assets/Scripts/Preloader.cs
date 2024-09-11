@@ -15,6 +15,7 @@ public class Preloader : MonoBehaviour
     //----- Functions
 
     void Start() {
+        //- Fade effect in start
         fadeGroup = FindAnyObjectByType<CanvasGroup>();
         fadeGroup.alpha = 1.0f;
 
@@ -26,17 +27,17 @@ public class Preloader : MonoBehaviour
 
 
     void Update() {
-        // Fade-In
+        //- Fade-In
         if (Time.time < minimumLogoTime) {
             fadeGroup.alpha = 1.0f - Time.time;
         }
 
-        // Fade-Out
+        //- Fade-Out
         if (Time.time > minimumLogoTime && loadTime != 0) {
             fadeGroup.alpha = Time.time - minimumLogoTime;
             
             if (fadeGroup.alpha >= 1) {
-                // Change Scene
+                //- Change Scene
                 SceneManager.LoadScene("Menu");
             }
         }
