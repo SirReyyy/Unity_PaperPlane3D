@@ -18,11 +18,14 @@ public class Menu : MonoBehaviour
 
     public Text colorBuySetTxt;
     public Text trailBuySetTxt;
+    public Text goldText;
 
     private int[] colorCost = new int[] {0, 5, 5, 5, 10, 10, 15, 15, 20, 20};
     private int[] trailCost = new int[] {0, 20, 20, 40, 40, 40, 60, 60, 80, 80};
     private int selectedColorIndex;
     private int selectedTrailIndex;
+    private int activeColorIndex;
+    private int activeTrailIndex;
 
     private Vector3 desiredMenuPos;
 
@@ -30,6 +33,9 @@ public class Menu : MonoBehaviour
     //----- Functions
 
     void Start() {
+        SaveManager.Instance.state.gold = 99; //-- for testing
+        UpdateGoldText();
+
         fadeGroup = FindAnyObjectByType<CanvasGroup>();
         fadeGroup.alpha = 1.0f;
 
@@ -57,6 +63,10 @@ public class Menu : MonoBehaviour
 
             Button b = t.GetComponent<Button>();
             b.onClick.AddListener(() => OnColorSelect(currentIndex));
+
+            Image img = t.GetComponent<Image>();
+            img.color = SaveManager.Instance.IsColorOwned(currentIndex) ? Color.white : new Color(0.7f, 0.7f, 0.7f);
+            
             childCount++;
         }
         childCount = 0;
@@ -68,6 +78,10 @@ public class Menu : MonoBehaviour
 
             Button b = t.GetComponent<Button>();
             b.onClick.AddListener(() => OnTrailSelect(currentIndex));
+            
+            Image img = t.GetComponent<Image>();
+            img.color = SaveManager.Instance.IsTrailOwned(currentIndex) ? Color.white : new Color(0.7f, 0.7f, 0.7f);
+
             childCount++;
         }
         childCount = 0;
@@ -100,14 +114,19 @@ public class Menu : MonoBehaviour
     } //-- SlideTo end
 
     private void SetColor(int index) {
-
+        activeColorIndex = index;
         colorBuySetTxt.text = "Active";
     } //-- SetColor end
 
     private void SetTrail(int index) {
-
+        activeTrailIndex = index;
         trailBuySetTxt.text = "Active";
     } //-- SetTrail end
+
+    public void UpdateGoldText() {
+        goldText.text = SaveManager.Instance.state.gold.ToString();
+    } //-- UpdateGoldText
+
 
     //----- Button Function
 
@@ -157,6 +176,8 @@ public class Menu : MonoBehaviour
         } else {
             if(SaveManager.Instance.BuyAttemptColor(selectedColorIndex, colorCost[selectedColorIndex])) {
                 SetColor(selectedColorIndex);
+                colorPanel.GetChild(0).GetChild(selectedColorIndex).GetChild(0).GetComponent<Image>().color = new Color32(0, 200, 200, 255);
+                UpdateGoldText();
             } else {
                 Debug.Log("Not enough gold."); //--
             }
@@ -171,6 +192,8 @@ public class Menu : MonoBehaviour
         } else {
             if(SaveManager.Instance.BuyAttemptTrail(selectedTrailIndex, trailCost[selectedTrailIndex])) {
                 SetTrail(selectedTrailIndex);
+                trailPanel.GetChild(0).GetChild(selectedTrailIndex).GetChild(0).GetComponent<Image>().color = new Color32(0, 200, 200, 255);
+                UpdateGoldText();
             } else {
                 Debug.Log("Not enough gold."); //--
             }

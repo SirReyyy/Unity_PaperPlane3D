@@ -12,7 +12,7 @@ public class SaveManager : MonoBehaviour
     //----- Functions
 
     void Awake() {
-        ResetSave();
+        ResetSave(); //-- temp
         DontDestroyOnLoad(this);
         Instance = this;
         Load();
