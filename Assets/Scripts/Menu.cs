@@ -39,6 +39,9 @@ public class Menu : MonoBehaviour
         SaveManager.Instance.state.gold = 99; //-- for testing
         UpdateGoldText();
 
+        //- Refocus camera
+        SetCameraTo(Manager.Instance.menuFocus);
+
         //- Fade effect on start
         fadeGroup = FindAnyObjectByType<CanvasGroup>();
         fadeGroup.alpha = 1.0f;
@@ -58,15 +61,13 @@ public class Menu : MonoBehaviour
         trailPanel.GetChild(0).GetChild(SaveManager.Instance.state.activeTrail).GetComponent<RectTransform>().localScale = Vector3.one * 1.2f;
     } //-- Start end
 
-
     void Update() {
         //- Fade
         fadeGroup.alpha = 1 - Time.timeSinceLevelLoad * fadeInSpeed;
 
         //- Lerping effect
-        menuContainer.anchoredPosition3D = Vector3.Lerp(menuContainer.anchoredPosition3D, desiredMenuPos, 0.03f);
+        menuContainer.anchoredPosition3D = Vector3.Lerp(menuContainer.anchoredPosition3D, desiredMenuPos, 0.02f);
     } //-- Update end
-
 
     private void InitShop() {
         //- Validation if panels are set in the Inspector
@@ -122,10 +123,33 @@ public class Menu : MonoBehaviour
             //- Add button functions via script
             Button b = t.GetComponent<Button>();
             b.onClick.AddListener(() => OnLevelSelect(currentIndex));
+
+            Image img = t.GetChild(0).GetComponent<Image>();
+            //- Check level status
+            if(childCount <= SaveManager.Instance.state.completedLevel) {
+                //- Level is unlocked
+                if(childCount == SaveManager.Instance.state.completedLevel) {
+                    img.color = Color.white;
+                    // img.color = new Color32(0, 200, 200, 255);
+                //- Level is completed
+                } else {
+                    img.color = Color.green;
+                }
+            //- Level is locked
+            } else {
+                b.interactable = false;
+                img.color = Color.grey;
+            }
+
             childCount++;
         }
         childCount = 0; //- Reset child count
     } //-- InitLevel end
+
+    public void SetCameraTo(int menuIndex) {
+        SlideTo(menuIndex);
+        menuContainer.anchoredPosition3D = desiredMenuPos;
+    } //-- SetCameraTo end
 
     private void SlideTo(int menuIndex) {
         switch (menuIndex) {
@@ -216,13 +240,11 @@ public class Menu : MonoBehaviour
     } //-- OnTrailSelect end
 
     private void OnLevelSelect(int currentIndex) {
-        Debug.Log("Level " + currentIndex);
-
-        //-- no functions yet
+        Manager.Instance.currentLevel = currentIndex;
+        SceneManager.LoadScene("Game");
     } //-- OnLevelSelect end
 
     public void OnColorBSClicked() {
-        // Debug.Log("Color Buy / Set Clicked");
         if(SaveManager.Instance.IsColorOwned(selectedColorIndex)) {
             SetColor(selectedColorIndex);
         } else {
@@ -238,7 +260,6 @@ public class Menu : MonoBehaviour
     } //-- OnColorBSClicked end
 
     public void OnTrailBSClicked() {
-        // Debug.Log("Trail Buy / Set Clicked");
         if(SaveManager.Instance.IsTrailOwned(selectedTrailIndex)) {
             SetTrail(selectedTrailIndex);
         } else {

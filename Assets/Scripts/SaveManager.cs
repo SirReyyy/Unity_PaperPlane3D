@@ -88,6 +88,12 @@ public class SaveManager : MonoBehaviour
         state.trailOwned |= 1 << index; 
     } //-- UnlockTrail end
 
+    public void CompleteLevel(int index) {
+        if(state.completedLevel == index) {
+            state.completedLevel++;
+            Save();    
+        }
+    } //-- CompleteLevel end
 
     //- For testing. remove
     public void ResetSave() {
